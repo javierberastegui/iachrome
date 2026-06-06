@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Clawky Browser Copilot",
+  "version": "0.1.0",
+  "description": "Puente seguro y controlado entre el navegador y tu asistente de IA local.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Clawky Copilot"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  }
+}

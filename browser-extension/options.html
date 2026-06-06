@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuración - Clawky Browser Copilot</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="title-area">
+        <span class="logo-icon">🐾</span>
+        <h1>Clawky Browser Copilot <span class="badge">Configuración</span></h1>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="card">
+        <h2>Ajustes del Conector de IA</h2>
+        <p class="description">Establece la dirección del servidor local y los parámetros de envío de información.</p>
+
+        <form id="settings-form">
+          <div class="form-group">
+            <label for="endpoint">Endpoint de la API Local:</label>
+            <input 
+              type="url" 
+              id="endpoint" 
+              placeholder="http://127.0.0.1:18789/browser/context" 
+              required
+            >
+            <small class="help-text">Dirección HTTP de tu servidor local de IA (por ejemplo, OpenClaw o Hermes).</small>
+          </div>
+
+          <div class="form-group">
+            <label for="max-text-length">Tamaño máximo del texto enviado (caracteres):</label>
+            <input 
+              type="number" 
+              id="max-text-length" 
+              min="1000" 
+              max="500000" 
+              required
+            >
+            <small class="help-text">Límite de caracteres del contenido de la página para evitar saturar el modelo.</small>
+          </div>
+
+          <div class="form-group-checkbox">
+            <input type="checkbox" id="include-links">
+            <div class="checkbox-label">
+              <label for="include-links">Enviar enlaces encontrados</label>
+              <small class="help-text">Incluye en el envío los links internos y externos detectados en la página.</small>
+            </div>
+          </div>
+
+          <div class="form-group-checkbox">
+            <input type="checkbox" id="include-selection">
+            <div class="checkbox-label">
+              <label for="include-selection">Enviar texto seleccionado</label>
+              <small class="help-text">Si seleccionas texto en la página, se incluirá en el payload enviado al modelo.</small>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar Configuración</button>
+            <span id="save-status" class="save-status"></span>
+          </div>
+        </form>
+      </section>
+
+      <section class="card info-card">
+        <h2>Seguridad y Privacidad</h2>
+        <p>Esta extensión sólo se ejecuta sobre la pestaña activa cuando pulsas <strong>"Analizar página"</strong>.</p>
+        <ul>
+          <li>No se envía información de forma automática sin tu acción explícita.</li>
+          <li>No se capturan contraseñas, cookies, tokens de acceso ni datos personales en formularios.</li>
+          <li>Toda la comunicación se realiza de forma local contra el endpoint configurado.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Clawky Browser Copilot • Versión 0.1.0</p>
+    </footer>
+  </div>
+
+  <script type="module" src="options.js"></script>
+</body>
+</html>

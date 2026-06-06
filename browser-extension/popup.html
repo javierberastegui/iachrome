@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clawky Browser Copilot</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="logo-icon">🐾</span>
+        <h1>Clawky <span class="tag">Copilot</span></h1>
+      </div>
+      <a href="#" id="btn-settings" class="settings-link" title="Configuración">⚙️</a>
+    </header>
+
+    <main class="app-body">
+      <!-- Input de usuario -->
+      <div class="form-group">
+        <label for="user-prompt">¿Qué deseas preguntarle a la IA sobre esta página?</label>
+        <textarea 
+          id="user-prompt" 
+          placeholder="Escribe tu pregunta o instrucciones aquí... (Ej. Hazme un resumen de este artículo)" 
+          rows="3"
+        ></textarea>
+      </div>
+
+      <!-- Acciones -->
+      <div class="actions-group">
+        <button id="btn-analyze" class="btn btn-secondary">
+          <span class="icon">🔍</span> Analizar página
+        </button>
+        <button id="btn-send" class="btn btn-primary" disabled>
+          <span class="icon">⚡</span> Enviar a IA
+        </button>
+      </div>
+
+      <!-- Indicador de Estado -->
+      <div class="status-panel">
+        <span class="status-dot idle" id="status-dot"></span>
+        <span class="status-text" id="status-text">Estado: Listo</span>
+      </div>
+
+      <!-- Previsualización de Datos Extraídos (se muestra al analizar) -->
+      <div id="preview-panel" class="preview-panel hidden">
+        <div class="preview-header">Datos capturados:</div>
+        <div class="preview-content">
+          <p><strong>Título:</strong> <span id="preview-title">-</span></p>
+          <p><strong>URL:</strong> <span id="preview-url" class="truncate">-</span></p>
+          <p><strong>Selección:</strong> <span id="preview-selection" class="italic">-</span></p>
+          <p><strong>Tamaño del texto:</strong> <span id="preview-chars">0</span> caracteres</p>
+        </div>
+      </div>
+
+      <!-- Panel de Respuesta -->
+      <div class="response-panel">
+        <div class="panel-title">Respuesta de la IA</div>
+        <div id="response-container" class="response-content empty">
+          La respuesta del modelo aparecerá aquí tras presionar "Enviar a IA"...
+        </div>
+      </div>
+    </main>
+    
+    <footer class="app-footer">
+      <span>Clawky Browser Copilot v0.1.0</span>
+    </footer>
+  </div>
+
+  <!-- Carga de lógica de la aplicación -->
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

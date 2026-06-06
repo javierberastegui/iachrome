@@ -15,3 +15,15 @@ Historial operativo de conectores lógicos hacia agentes: OpenClaw/Clawky, Antig
   - emitir eventos estructurados para request, éxito, fallo y respuesta recibida.
 - Siguiente paso:
   - definir contrato mínimo `AgentPromptRequest` y `AgentPromptResponse`.
+
+### 2026-06-06 - Implementación del Conector de API v0.1.0
+
+- Contexto: Desarrollo de la capa de comunicación cliente para enviar contexto de navegación a la API local.
+- Objetivo: Diseñar e implementar el cliente HTTP.
+- Decisiones:
+  - Se desarrolló `src/apiClient.js` encargado de realizar solicitudes HTTP POST con el payload estructurado.
+  - Se configuró el endpoint por defecto en `http://127.0.0.1:18789/browser/context`.
+  - Se incorporó un mecanismo de abortar/cancelar la petición (Timeout) de 8 segundos usando `AbortController` para evitar esperas infinitas.
+  - El cliente emite los eventos `context_send_started`, `context_send_success` y `context_send_error` de forma asíncrona hacia el `eventBus`.
+- Siguiente paso:
+  - Verificar la integración con un servidor local real (como OpenClaw o Hermes) y evaluar latencias de red o problemas de CORS.
