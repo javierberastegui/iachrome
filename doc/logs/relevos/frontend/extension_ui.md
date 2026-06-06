@@ -10,6 +10,7 @@ Fase v0.1.0 completada. Interfaz gráfica funcional desarrollada para el popup y
 - Creada interfaz de popup (`popup.html`, `popup.css`, `popup.js`) con controles, estados y panel de respuesta.
 - Creada interfaz de opciones (`options.html`, `options.css`, `options.js`) para modificar y persistir la configuración.
 - Implementado estilo visual oscuro técnico premium utilizando una paleta basada en HSL, con bordes y botones pulidos y transiciones suaves.
+- Añadidos controles dinámicos e interactivos en la página de opciones para seleccionar y configurar individualmente los proveedores (Custom, Ollama, Hermes, Antigravity).
 
 ## Pendiente
 

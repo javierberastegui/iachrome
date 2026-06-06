@@ -139,8 +139,8 @@ async function init() {
         settings
       });
 
-      // Enviar a la API local
-      const responseText = await sendContextToApi(settings.endpoint, payload);
+      // Enviar a la API local/proveedor
+      const responseText = await sendContextToApi(settings, payload);
 
       // Mostrar respuesta de forma segura
       responseContainer.className = 'response-content';

@@ -2,20 +2,70 @@ import { getSettings, saveSettings } from './src/config.js';
 
 // Elementos del DOM
 const settingsForm = document.getElementById('settings-form');
+const selectProvider = document.getElementById('provider');
 const inputEndpoint = document.getElementById('endpoint');
 const inputMaxTextLength = document.getElementById('max-text-length');
 const checkboxIncludeLinks = document.getElementById('include-links');
 const checkboxIncludeSelection = document.getElementById('include-selection');
+
+// Contenedores de campos específicos
+const fieldsCustom = document.getElementById('fields-custom');
+const fieldsOllama = document.getElementById('fields-ollama');
+const fieldsHermes = document.getElementById('fields-hermes');
+const fieldsAntigravity = document.getElementById('fields-antigravity');
+
+// Campos de Ollama
+const inputOllamaUrl = document.getElementById('ollama-url');
+const inputOllamaModel = document.getElementById('ollama-model');
+
+// Campos de Hermes
+const inputHermesUrl = document.getElementById('hermes-url');
+
+// Campos de Antigravity
+const inputAntigravityUrl = document.getElementById('antigravity-url');
+
 const saveStatusText = document.getElementById('save-status');
+
+// Actualizar la visibilidad de los paneles según el proveedor
+function updateFieldsVisibility() {
+  const provider = selectProvider.value;
+  
+  // Ocultar todos
+  fieldsCustom.classList.add('hidden');
+  fieldsOllama.classList.add('hidden');
+  fieldsHermes.classList.add('hidden');
+  fieldsAntigravity.classList.add('hidden');
+
+  // Mostrar el seleccionado
+  if (provider === 'custom') {
+    fieldsCustom.classList.remove('hidden');
+  } else if (provider === 'ollama') {
+    fieldsOllama.classList.remove('hidden');
+  } else if (provider === 'hermes') {
+    fieldsHermes.classList.remove('hidden');
+  } else if (provider === 'antigravity') {
+    fieldsAntigravity.classList.remove('hidden');
+  }
+}
 
 // Cargar configuraciones al iniciar la página
 async function loadConfig() {
   const settings = await getSettings();
   
+  selectProvider.value = settings.provider || 'custom';
   inputEndpoint.value = settings.endpoint;
   inputMaxTextLength.value = settings.maxTextLength;
   checkboxIncludeLinks.checked = settings.includeLinks;
   checkboxIncludeSelection.checked = settings.includeSelection;
+
+  // Cargar campos específicos
+  inputOllamaUrl.value = settings.ollamaUrl || 'http://127.0.0.1:11434/api/generate';
+  inputOllamaModel.value = settings.ollamaModel || 'llama3';
+  inputHermesUrl.value = settings.hermesUrl || 'http://127.0.0.1:18789/browser/context';
+  inputAntigravityUrl.value = settings.antigravityUrl || 'http://127.0.0.1:18789/browser/context';
+
+  // Sincronizar visibilidad
+  updateFieldsVisibility();
 }
 
 // Guardar configuraciones en el almacenamiento
@@ -23,10 +73,15 @@ async function handleFormSubmit(e) {
   e.preventDefault();
 
   const newSettings = {
+    provider: selectProvider.value,
     endpoint: inputEndpoint.value.trim(),
     maxTextLength: parseInt(inputMaxTextLength.value, 10),
     includeLinks: checkboxIncludeLinks.checked,
-    includeSelection: checkboxIncludeSelection.checked
+    includeSelection: checkboxIncludeSelection.checked,
+    ollamaUrl: inputOllamaUrl.value.trim(),
+    ollamaModel: inputOllamaModel.value.trim(),
+    hermesUrl: inputHermesUrl.value.trim(),
+    antigravityUrl: inputAntigravityUrl.value.trim()
   };
 
   await saveSettings(newSettings);
@@ -42,4 +97,5 @@ async function handleFormSubmit(e) {
 
 // Escuchar eventos
 document.addEventListener('DOMContentLoaded', loadConfig);
+selectProvider.addEventListener('change', updateFieldsVisibility);
 settingsForm.addEventListener('submit', handleFormSubmit);

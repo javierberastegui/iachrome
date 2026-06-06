@@ -1,23 +1,50 @@
 /**
- * PayloadBuilder - Crea y valida el JSON estructurado a enviar a la API.
+ * PayloadBuilder - Crea y valida el JSON estructurado a enviar a la API
+ * adaptando el formato al proveedor seleccionado.
  */
 export function buildPayload({ rawContext, userPrompt, settings }) {
-  const { maxTextLength, includeLinks, includeSelection } = settings;
+  const { provider, maxTextLength, includeLinks, includeSelection } = settings;
 
-  // 1. Procesar texto principal según límites
+  // 1. Limitar el texto principal
   let text = rawContext.text || '';
   if (text.length > maxTextLength) {
     text = text.substring(0, maxTextLength) + '\n\n[... TEXTO TRUNCADO POR LÍMITE DE CONFIGURACIÓN ...]';
   }
 
-  // 2. Procesar selección según configuración
+  // 2. Filtrar campos según configuración
   const selection = includeSelection ? (rawContext.selection || '') : '';
-
-  // 3. Procesar links según configuración
   const links = includeLinks ? (rawContext.links || []) : [];
 
-  // 4. Armar el objeto estructurado
-  const payload = {
+  // Si el proveedor es Ollama, creamos el formato de prompt de texto plano para LLM
+  if (provider === 'ollama') {
+    let promptContent = `[CONTEXTO DE LA PÁGINA WEB]\n`;
+    promptContent += `URL: ${rawContext.url || 'Desconocida'}\n`;
+    promptContent += `Título: ${rawContext.title || 'Sin Título'}\n`;
+    
+    if (selection) {
+      promptContent += `Texto seleccionado por el usuario:\n"""\n${selection}\n"""\n`;
+    }
+    
+    if (links.length > 0) {
+      promptContent += `Enlaces importantes:\n`;
+      links.forEach(l => {
+        promptContent += `- ${l.text}: ${l.href}\n`;
+      });
+    }
+
+    promptContent += `\nContenido de la página (texto visible):\n"""\n${text}\n"""\n\n`;
+    promptContent += `[PREGUNTA / INSTRUCCIÓN DEL USUARIO]\n`;
+    promptContent += userPrompt ? userPrompt : 'Analiza esta página y haz un resumen.';
+
+    return {
+      model: settings.ollamaModel || 'llama3',
+      prompt: promptContent,
+      stream: false
+    };
+  }
+
+  // Si es Custom, Hermes o Antigravity, enviamos el JSON estructurado estándar
+  return {
     source: 'browser_extension',
     event_type: 'browser_context_requested',
     timestamp: new Date().toISOString(),
@@ -39,6 +66,4 @@ export function buildPayload({ rawContext, userPrompt, settings }) {
       version: '0.1.0'
     }
   };
-
-  return payload;
 }

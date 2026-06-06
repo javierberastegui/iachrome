@@ -1,10 +1,15 @@
 import { eventBus } from './eventBus.js';
 
 export const DEFAULT_SETTINGS = {
+  provider: 'custom', // 'custom', 'ollama', 'hermes', 'antigravity'
   endpoint: 'http://127.0.0.1:18789/browser/context',
   maxTextLength: 50000,
   includeLinks: true,
-  includeSelection: true
+  includeSelection: true,
+  ollamaUrl: 'http://127.0.0.1:11434/api/generate',
+  ollamaModel: 'llama3',
+  hermesUrl: 'http://127.0.0.1:18789/browser/context',
+  antigravityUrl: 'http://127.0.0.1:18789/browser/context'
 };
 
 /**

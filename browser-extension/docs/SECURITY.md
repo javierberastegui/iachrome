@@ -22,7 +22,10 @@ Para proteger la información privada del usuario, la extracción de datos del D
 *   **Sin Ejecución de Código Arbitrario**: La respuesta del servidor de IA se muestra en el popup empleando propiedades de texto plano (`textContent` / `innerText`). **Bajo ninguna circunstancia** se evalúa o inserta HTML dinámico o JavaScript devuelto por la IA, evitando ataques XSS.
 *   **Sin Automatización de Acciones**: Esta versión de la extensión es de sólo lectura ("leer contexto + enviar + mostrar respuesta"). No interactúa físicamente con la página activa (hacer clics, rellenar formularios, interactuar con botones o realizar navegaciones automáticas).
 
-## 4. Comunicación Segura
+## 4. Comunicación Segura y Proveedores Locales
 
-*   La extensión envía la información directamente al endpoint definido por el usuario (por defecto, la API local del sistema `http://127.0.0.1:18789/browser/context`).
-*   No hay servidores intermediarios operados por terceros ni telemetría externa.
+*   La extensión envía la información directamente a los endpoints locales configurados por el usuario.
+*   **Proveedores Soportados**:
+    *   **Custom / Hermes / Antigravity**: Envían un JSON estructurado completo de contexto al puerto/dirección configurada.
+    *   **Ollama**: Compila el contexto en un prompt único de texto y lo envía al endpoint `/api/generate` de la instancia local de Ollama.
+*   No hay servidores intermediarios operados por terceros ni telemetría externa. La comunicación se mantiene local en tu máquina (`127.0.0.1` / `localhost`).

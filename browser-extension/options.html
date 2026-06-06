@@ -18,19 +18,82 @@
     <main class="main-content">
       <section class="card">
         <h2>Ajustes del Conector de IA</h2>
-        <p class="description">Establece la dirección del servidor local y los parámetros de envío de información.</p>
+        <p class="description">Selecciona el proveedor de IA al que deseas enviar el contexto y configura sus detalles.</p>
 
         <form id="settings-form">
           <div class="form-group">
-            <label for="endpoint">Endpoint de la API Local:</label>
-            <input 
-              type="url" 
-              id="endpoint" 
-              placeholder="http://127.0.0.1:18789/browser/context" 
-              required
-            >
-            <small class="help-text">Dirección HTTP de tu servidor local de IA (por ejemplo, OpenClaw o Hermes).</small>
+            <label for="provider">Proveedor de IA:</label>
+            <select id="provider">
+              <option value="custom">API Estructurada (Custom)</option>
+              <option value="ollama">Ollama (Local API)</option>
+              <option value="hermes">Hermes (Local Gateway)</option>
+              <option value="antigravity">Antigravity (Local Link)</option>
+            </select>
+            <small class="help-text">Elige el tipo de backend con el que te conectarás.</small>
           </div>
+
+          <!-- Campos para API Estructurada / Custom -->
+          <div id="fields-custom" class="provider-fields">
+            <div class="form-group">
+              <label for="endpoint">Endpoint de la API Local:</label>
+              <input 
+                type="url" 
+                id="endpoint" 
+                placeholder="http://127.0.0.1:18789/browser/context"
+              >
+              <small class="help-text">Dirección de recepción de payload estructurado.</small>
+            </div>
+          </div>
+
+          <!-- Campos para Ollama -->
+          <div id="fields-ollama" class="provider-fields hidden">
+            <div class="form-group">
+              <label for="ollama-url">URL de Ollama:</label>
+              <input 
+                type="url" 
+                id="ollama-url" 
+                placeholder="http://127.0.0.1:11434/api/generate"
+              >
+              <small class="help-text">Normalmente http://127.0.0.1:11434/api/generate</small>
+            </div>
+            <div class="form-group">
+              <label for="ollama-model">Nombre del Modelo:</label>
+              <input 
+                type="text" 
+                id="ollama-model" 
+                placeholder="llama3"
+              >
+              <small class="help-text">Ejemplo: llama3, mistral, codegemma, phi3, etc.</small>
+            </div>
+          </div>
+
+          <!-- Campos para Hermes -->
+          <div id="fields-hermes" class="provider-fields hidden">
+            <div class="form-group">
+              <label for="hermes-url">URL de Hermes:</label>
+              <input 
+                type="url" 
+                id="hermes-url" 
+                placeholder="http://127.0.0.1:18789/browser/context"
+              >
+              <small class="help-text">Dirección de la API de tu agente de integración local Hermes.</small>
+            </div>
+          </div>
+
+          <!-- Campos para Antigravity -->
+          <div id="fields-antigravity" class="provider-fields hidden">
+            <div class="form-group">
+              <label for="antigravity-url">URL de Antigravity:</label>
+              <input 
+                type="url" 
+                id="antigravity-url" 
+                placeholder="http://127.0.0.1:18789/browser/context"
+              >
+              <small class="help-text">Dirección de comunicación con el puente de automatización de Antigravity.</small>
+            </div>
+          </div>
+
+          <hr class="divider">
 
           <div class="form-group">
             <label for="max-text-length">Tamaño máximo del texto enviado (caracteres):</label>

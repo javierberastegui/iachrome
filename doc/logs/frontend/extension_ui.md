@@ -28,3 +28,13 @@ Historial operativo de la UI de IAChrome: popup, side panel, options, estados vi
   - Se optó por modularizar la lógica en archivos JavaScript ES6, cargados con `type="module"` en el HTML del popup y de las opciones.
 - Siguiente paso:
   - Validar la visualización del popup y la persistencia de las opciones en un entorno de pruebas real en el navegador Chrome.
+
+### 2026-06-06 - Soporte Multiproveedor en UI
+
+- Contexto: Solicitud de integración de Ollama, Hermes y Antigravity.
+- Objetivo: Diseñar e implementar controles de selección y parametrización de proveedores en la página de opciones.
+- Decisiones:
+  - Se modificó `options.html` y `options.js` para añadir un selector de proveedor que oculta y muestra los campos correspondientes a cada servicio de manera interactiva.
+  - Se adaptó `options.css` para soportar la visibilidad condicional y la estilización de elementos de formulario adicionales.
+- Siguiente paso:
+  - Probar visualmente la alternancia de proveedores y comprobar que los campos ocultos no se envíen si el usuario no los guarda.

@@ -47,7 +47,8 @@ Emitido por el cliente de API (`apiClient.js`) justo antes de iniciar la solicit
 *   **Estructura del Payload**:
     ```json
     {
-      "endpoint": "http://127.0.0.1:18789/browser/context",
+      "endpoint": "http://127.0.0.1:11434/api/generate",
+      "provider": "ollama",
       "payloadSize": 5420
     }
     ```
@@ -81,9 +82,14 @@ Emitido por la utilidad de almacenamiento (`config.js`) cada vez que el usuario 
 *   **Estructura del Payload**:
     ```json
     {
+      "provider": "ollama",
       "endpoint": "http://127.0.0.1:18789/browser/context",
       "maxTextLength": 50000,
       "includeLinks": true,
-      "includeSelection": true
+      "includeSelection": true,
+      "ollamaUrl": "http://127.0.0.1:11434/api/generate",
+      "ollamaModel": "llama3",
+      "hermesUrl": "http://127.0.0.1:18789/browser/context",
+      "antigravityUrl": "http://127.0.0.1:18789/browser/context"
     }
     ```

@@ -1,16 +1,21 @@
 # Clawky Browser Copilot - Extensión de Navegador (v0.1.0)
 
-**Clawky Browser Copilot** es una extensión de navegador para Google Chrome y Microsoft Edge (Manifest V3) diseñada para conectar la página activa con tu sistema local de Inteligencia Artificial (por ejemplo, OpenClaw o Hermes). 
+**Clawky Browser Copilot** es una extensión de navegador para Google Chrome y Microsoft Edge (Manifest V3) diseñada para conectar la página activa con tu sistema local de Inteligencia Artificial (como Ollama, Hermes, Antigravity u otros servidores de inferencia locales). 
 
-Su objetivo es proporcionar un puente controlado y seguro, permitiendo al usuario enviar el contexto de la página web actual junto con instrucciones personalizadas directamente a un servidor local.
+Su objetivo es proporcionar un puente controlado y seguro, permitiendo al usuario enviar el contexto de la página web actual junto con instrucciones personalizadas directamente a un proveedor local.
 
 ---
 
 ## 🚀 Características principales
 
 1.  **Lectura Bajo Demanda**: La extensión no recopila información en segundo plano ni monitoriza tu actividad. El análisis e inicio del envío ocurren estrictamente cuando interactúas con la extensión y pulsas el botón.
-2.  **Configuración Flexible**: Permite modificar el endpoint, el límite de caracteres a enviar y excluir ciertos metadatos (como la selección de texto o los enlaces de la página).
-3.  **Capa Central de Eventos**: Cada módulo emite eventos estructurados que facilitan la trazabilidad y la depuración del sistema en la consola de desarrollo.
+2.  **Soporte Multiproveedor**:
+    *   **Ollama (Local LLM)**: Conexión directa con tu instalación de Ollama (ej. Llama, Mistral, etc.) para procesar la página con instrucciones de lenguaje natural.
+    *   **Hermes (Local Gateway)**: Envío de datos al puente local del agente Hermes.
+    *   **Antigravity (Local Link)**: Integración con los flujos de automatización de Antigravity.
+    *   **API Estructurada (Custom)**: Envío del payload JSON de contexto completo a un endpoint HTTP personalizado.
+3.  **Configuración Flexible**: Permite modificar la URL de cada endpoint, el modelo activo (para Ollama), el límite de caracteres a enviar y excluir ciertos metadatos (como la selección de texto o los enlaces de la página).
+4.  **Capa Central de Eventos**: Cada módulo emite eventos estructurados que facilitan la trazabilidad y la depuración del sistema en la consola de desarrollo.
 
 ---
 
@@ -23,30 +28,30 @@ Sigue estos pasos para cargar la extensión localmente en tu navegador:
     *   En Edge: Escribe `edge://extensions/` en la barra de direcciones.
 2.  En la esquina superior derecha, activa el interruptor **Modo de desarrollador** (Developer mode).
 3.  Haz clic en el botón **Cargar descomprimida** (Load unpacked) que aparecerá en la parte superior izquierda.
-4.  Selecciona la carpeta `browser-extension` de este repositorio.
+4.  Selecciona la carpeta `browser-extension` de este repositorio. (Nota: No selecciones la raíz del proyecto `iachrome` sino la carpeta interna `/browser-extension`).
 5.  ¡Listo! El icono de la extensión aparecerá en tu barra de herramientas.
 
 ---
 
-## ⚙️ Configuración del Endpoint
+## ⚙️ Configuración del Proveedor y Endpoint
 
-Por defecto, la extensión se comunica con la siguiente dirección:
-*   `http://127.0.0.1:18789/browser/context`
-
-Para modificar este endpoint u otros valores:
+Para modificar el proveedor de IA u otros valores:
 1.  Haz clic en el icono de la extensión para abrir el popup.
 2.  Haz clic en el engranaje (⚙️) en la parte superior derecha.
 3.  Se abrirá una nueva pestaña con la página de opciones.
-4.  Configura los parámetros (Endpoint, Límite de caracteres, Toggles de links/selección) y presiona **Guardar Configuración**.
+4.  Selecciona tu **Proveedor de IA** en el menú desplegable:
+    *   **Ollama**: Configura la URL del endpoint (por defecto `http://127.0.0.1:11434/api/generate`) y escribe el nombre del modelo que tengas descargado localmente (ej: `llama3`, `mistral`, `phi3`).
+    *   **Hermes/Antigravity/Custom**: Configura la URL HTTP correspondiente del receptor.
+5.  Modifica los parámetros comunes (Límite de caracteres, Toggles de links/selección) y presiona **Guardar Configuración**.
 
 *Nota: Asegúrate de que el servidor local al que apunta el endpoint soporte peticiones de tipo CORS (Cross-Origin Resource Sharing) desde la extensión.*
 
 ---
 
-## 📦 Ejemplo de Payload Enviado (JSON)
+## 📦 Formatos de Payload Enviados (JSON)
 
-Al presionar "Enviar a IA", la extensión realiza una petición `POST` al endpoint configurado enviando un cuerpo JSON con el siguiente formato:
-
+### 1. Formato Estructurado Estándar (Custom, Hermes, Antigravity)
+Se envía un JSON estructurado de la siguiente forma:
 ```json
 {
   "source": "browser_extension",
@@ -74,6 +79,16 @@ Al presionar "Enviar a IA", la extensión realiza una petición `POST` al endpoi
     "name": "Clawky Browser Copilot",
     "version": "0.1.0"
   }
+}
+```
+
+### 2. Formato Ollama (/api/generate)
+Se compila toda la información de la página y la instrucción del usuario en un prompt de texto plano unificado, estructurando la llamada de la siguiente manera:
+```json
+{
+  "model": "llama3",
+  "prompt": "[CONTEXTO DE LA PÁGINA WEB]\nURL: https://...\nTítulo: ...\n\nContenido de la página (texto visible):\n\"\"\"\n...\n\"\"\"\n\n[PREGUNTA / INSTRUCCIÓN DEL USUARIO]\nPor favor, resume este artículo...",
+  "stream": false
 }
 ```
 
