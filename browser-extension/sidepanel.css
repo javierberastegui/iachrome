@@ -434,6 +434,39 @@ select:focus {
   opacity: 1;
 }
 
+.form-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 15px;
+}
+
+.status-container {
+  margin-top: 10px;
+  min-height: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.test-status {
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+  text-align: center;
+}
+
+.test-status.success {
+  color: var(--success);
+}
+
+.test-status.error {
+  color: #fca5a5;
+}
+
 /* Footer */
 .app-footer {
   text-align: center;

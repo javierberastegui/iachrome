@@ -46,6 +46,8 @@ const inputHermesUrl = document.getElementById('hermes-url');
 const inputAntigravityUrl = document.getElementById('antigravity-url');
 
 const saveStatusText = document.getElementById('save-status');
+const btnTestConnection = document.getElementById('btn-test-connection');
+const testStatusText = document.getElementById('test-status');
 
 // === EVENTOS DEL EVENTBUS PARA ACTUALIZAR LA INTERFAZ ===
 eventBus.on('page_context_collected', (event) => {
@@ -161,6 +163,66 @@ async function handleSettingsSubmit(e) {
   }, 1000);
 }
 
+/**
+ * Realiza una prueba de conexión rápida con el servidor de IA activo.
+ */
+async function testConnection() {
+  const provider = selectProvider.value;
+  let url = '';
+
+  if (provider === 'custom') {
+    url = inputEndpoint.value.trim();
+  } else if (provider === 'ollama') {
+    url = inputOllamaUrl.value.trim();
+  } else if (provider === 'hermes') {
+    url = inputHermesUrl.value.trim();
+  } else if (provider === 'antigravity') {
+    url = inputAntigravityUrl.value.trim();
+  }
+
+  if (!url) {
+    testStatusText.className = 'test-status error';
+    testStatusText.textContent = '✗ Error: La URL de conexión está vacía';
+    return;
+  }
+
+  btnTestConnection.disabled = true;
+  btnTestConnection.textContent = 'Probando...';
+  testStatusText.className = 'test-status';
+  testStatusText.textContent = 'Verificando servicio y CORS...';
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 segundos de timeout
+
+  try {
+    // Para validar la conectividad y CORS, hacemos una petición de red
+    // al endpoint especificado. El éxito de red (independiente del HTTP status,
+    // que puede ser 400 o 405 si falta payload pero la petición se completó)
+    // demuestra que el servidor está encendido y permite el origen de la extensión.
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ test_connection: true }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+    testStatusText.className = 'test-status success';
+    testStatusText.textContent = `✓ Conexión establecida con éxito (HTTP ${response.status})`;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    testStatusText.className = 'test-status error';
+    if (error.name === 'AbortError') {
+      testStatusText.textContent = '✗ Error: Tiempo de espera agotado (4s)';
+    } else {
+      testStatusText.textContent = '✗ Error de conexión (Servidor inactivo o bloqueo CORS)';
+    }
+  } finally {
+    btnTestConnection.disabled = false;
+    btnTestConnection.textContent = 'Probar Conexión';
+  }
+}
+
 // === INICIALIZACIÓN Y BINDING ===
 async function init() {
   updateStatus('idle', 'Listo');
@@ -170,6 +232,7 @@ async function init() {
   btnBackToChat.addEventListener('click', showChatPane);
   selectProvider.addEventListener('change', updateFieldsVisibility);
   settingsForm.addEventListener('submit', handleSettingsSubmit);
+  btnTestConnection.addEventListener('click', testConnection);
 
   // Botón: Analizar Página
   btnAnalyze.addEventListener('click', async () => {
