@@ -278,3 +278,38 @@ select:focus {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
+.btn-secondary {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--bg-input);
+  border-color: var(--text-muted);
+}
+
+.status-container {
+  margin-top: 15px;
+  min-height: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.test-status {
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+  text-align: center;
+}
+
+.test-status.success {
+  color: var(--success);
+}
+
+.test-status.error {
+  color: #fca5a5;
+}
+

@@ -25,6 +25,8 @@ const inputHermesUrl = document.getElementById('hermes-url');
 const inputAntigravityUrl = document.getElementById('antigravity-url');
 
 const saveStatusText = document.getElementById('save-status');
+const btnTestConnection = document.getElementById('btn-test-connection');
+const testStatusText = document.getElementById('test-status');
 
 // Actualizar la visibilidad de los paneles según el proveedor
 function updateFieldsVisibility() {
@@ -95,7 +97,64 @@ async function handleFormSubmit(e) {
   }, 3000);
 }
 
+/**
+ * Realiza una prueba de conexión rápida con el servidor de IA activo.
+ */
+async function testConnection() {
+  const provider = selectProvider.value;
+  let url = '';
+
+  if (provider === 'custom') {
+    url = inputEndpoint.value.trim();
+  } else if (provider === 'ollama') {
+    url = inputOllamaUrl.value.trim();
+  } else if (provider === 'hermes') {
+    url = inputHermesUrl.value.trim();
+  } else if (provider === 'antigravity') {
+    url = inputAntigravityUrl.value.trim();
+  }
+
+  if (!url) {
+    testStatusText.className = 'test-status error';
+    testStatusText.textContent = '✗ Error: La URL de conexión está vacía';
+    return;
+  }
+
+  btnTestConnection.disabled = true;
+  btnTestConnection.textContent = 'Probando...';
+  testStatusText.className = 'test-status';
+  testStatusText.textContent = 'Verificando servicio y CORS...';
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 segundos de timeout
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ test_connection: true }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+    testStatusText.className = 'test-status success';
+    testStatusText.textContent = `✓ Conexión establecida con éxito (HTTP ${response.status})`;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    testStatusText.className = 'test-status error';
+    if (error.name === 'AbortError') {
+      testStatusText.textContent = '✗ Error: Tiempo de espera agotado (4s)';
+    } else {
+      testStatusText.textContent = '✗ Error de conexión (Servidor inactivo o bloqueo CORS)';
+    }
+  } finally {
+    btnTestConnection.disabled = false;
+    btnTestConnection.textContent = 'Probar Conexión';
+  }
+}
+
 // Escuchar eventos
 document.addEventListener('DOMContentLoaded', loadConfig);
 selectProvider.addEventListener('change', updateFieldsVisibility);
 settingsForm.addEventListener('submit', handleFormSubmit);
+btnTestConnection.addEventListener('click', testConnection);

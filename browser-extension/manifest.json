@@ -9,6 +9,10 @@
     "scripting",
     "sidePanel"
   ],
+  "host_permissions": [
+    "http://localhost/*",
+    "http://127.0.0.1/*"
+  ],
   "action": {
     "default_title": "Clawky Copilot"
   },

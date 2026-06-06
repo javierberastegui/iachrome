@@ -8,6 +8,7 @@ La extensión solicita el número mínimo absoluto de permisos requeridos para f
 *   `activeTab`: Este permiso otorga acceso temporal a la pestaña actualmente activa **sólo cuando el usuario pulsa explícitamente el botón "Analizar página"**. No da acceso permanente ni permite monitorear la navegación en segundo plano.
 *   `storage`: Utilizado de forma local en el navegador para almacenar las preferencias de configuración de la extensión.
 *   `scripting`: Permite inyectar de manera segura el script de extracción en la pestaña activa al presionar el botón de la interfaz.
+*   `host_permissions` (`http://localhost/*`, `http://127.0.0.1/*`): Permite a la extensión comunicarse con servidores locales y APIs de IA (como Ollama, Hermes, Antigravity) para realizar pruebas de conexión y enviar el contexto directamente desde el panel lateral o la página de opciones, evitando bloqueos CORS causados por la falta de cabeceras adecuadas en las APIs locales.
 
 ## 2. Captura y Sanitización de Datos
 

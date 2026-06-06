@@ -38,3 +38,15 @@ Historial operativo de la UI de IAChrome: popup, side panel, options, estados vi
   - Se adaptó `options.css` para soportar la visibilidad condicional y la estilización de elementos de formulario adicionales.
 - Siguiente paso:
   - Probar visualmente la alternancia de proveedores y comprobar que los campos ocultos no se envíen si el usuario no los guarda.
+
+### 2026-06-06 - Integración de Botón de Prueba de Conexión en Opciones y Permisos de Host
+
+- Contexto: Solicitud de sincronización del botón de prueba de conexión en la página de opciones e incidencias de CORS con endpoints locales.
+- Objetivo: Sincronizar el botón "Probar Conexión" en options.html y dotar a la extensión de host_permissions para evitar el bloqueo de CORS al conectar localmente.
+- Decisiones:
+  - Se replicó el botón "Probar Conexión" e indicador de estado en `options.html`.
+  - Se implementó la función `testConnection` en `options.js` con el respectivo manejador del evento click, utilizando un AbortController para un timeout de 4 segundos.
+  - Se añadieron estilos en `options.css` para el botón secundario y mensajes de error y éxito de conexión.
+  - Se añadió `"host_permissions"` para `http://localhost/*` y `http://127.0.0.1/*` en `manifest.json` para permitir peticiones locales cruzadas desde el panel de opciones y el panel lateral sin bloqueos CORS.
+- Siguiente paso:
+  - Realizar una verificación final de que la extensión carga correctamente en el navegador y el botón prueba la conexión con éxito contra la API local de IA.
