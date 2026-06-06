@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clawky Browser Copilot</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- VISTA PRINCIPAL: COPILOTO / CHAT -->
+    <div id="view-chat" class="view-pane active">
+      <header class="app-header">
+        <div class="logo-area">
+          <span class="logo-icon">🐾</span>
+          <h1>Clawky <span class="tag">Copilot</span></h1>
+        </div>
+        <button id="btn-toggle-settings" class="icon-button" title="Configuración y Conexiones">
+          ⚙️
+        </button>
+      </header>
+
+      <main class="app-body">
+        <!-- Input de usuario -->
+        <div class="form-group">
+          <label for="user-prompt">¿Qué deseas preguntarle a la IA sobre esta página?</label>
+          <textarea 
+            id="user-prompt" 
+            placeholder="Escribe tu pregunta o instrucciones aquí... (Ej. Hazme un resumen de este artículo)" 
+            rows="4"
+          ></textarea>
+        </div>
+
+        <!-- Acciones -->
+        <div class="actions-group">
+          <button id="btn-analyze" class="btn btn-secondary">
+            <span class="icon">🔍</span> Analizar página
+          </button>
+          <button id="btn-send" class="btn btn-primary" disabled>
+            <span class="icon">⚡</span> Enviar a IA
+          </button>
+        </div>
+
+        <!-- Indicador de Estado -->
+        <div class="status-panel">
+          <span class="status-dot idle" id="status-dot"></span>
+          <span class="status-text" id="status-text">Estado: Listo</span>
+        </div>
+
+        <!-- Previsualización de Datos Extraídos -->
+        <div id="preview-panel" class="preview-panel hidden">
+          <div class="preview-header">Datos capturados:</div>
+          <div class="preview-content">
+            <p><strong>Título:</strong> <span id="preview-title">-</span></p>
+            <p><strong>URL:</strong> <span id="preview-url" class="truncate">-</span></p>
+            <p><strong>Selección:</strong> <span id="preview-selection" class="italic">-</span></p>
+            <p><strong>Tamaño del texto:</strong> <span id="preview-chars">0</span> caracteres</p>
+          </div>
+        </div>
+
+        <!-- Panel de Respuesta -->
+        <div class="response-panel">
+          <div class="panel-title">Respuesta de la IA</div>
+          <div id="response-container" class="response-content empty">
+            La respuesta del modelo aparecerá aquí tras presionar "Enviar a IA"...
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- VISTA SECUNDARIA: CONFIGURACIÓN Y CONEXIONES (INTEGRADA) -->
+    <div id="view-settings" class="view-pane">
+      <header class="app-header">
+        <div class="logo-area">
+          <button id="btn-back-to-chat" class="back-button" title="Volver al chat">←</button>
+          <h1>Configuración</h1>
+        </div>
+      </header>
+
+      <main class="app-body scrollable-body">
+        <form id="settings-form">
+          
+          <div class="form-group">
+            <label for="provider">Proveedor de IA:</label>
+            <select id="provider">
+              <option value="custom">API Estructurada (Custom)</option>
+              <option value="ollama">Ollama (Local API)</option>
+              <option value="hermes">Hermes (Local Gateway)</option>
+              <option value="antigravity">Antigravity (Local Link)</option>
+            </select>
+            <small class="help-text">Elige el tipo de backend con el que te conectarás.</small>
+          </div>
+
+          <!-- Campos para API Estructurada / Custom -->
+          <div id="fields-custom" class="provider-fields">
+            <div class="form-group">
+              <label for="endpoint">Endpoint de la API Local:</label>
+              <input 
+                type="url" 
+                id="endpoint" 
+                placeholder="http://127.0.0.1:18789/browser/context"
+              >
+              <small class="help-text">Dirección de recepción de payload estructurado.</small>
+            </div>
+          </div>
+
+          <!-- Campos para Ollama -->
+          <div id="fields-ollama" class="provider-fields hidden">
+            <div class="form-group">
+              <label for="ollama-url">URL de Ollama:</label>
+              <input 
+                type="url" 
+                id="ollama-url" 
+                placeholder="http://127.0.0.1:11434/api/generate"
+              >
+              <small class="help-text">Dirección típica: http://127.0.0.1:11434/api/generate</small>
+            </div>
+            <div class="form-group">
+              <label for="ollama-model">Nombre del Modelo:</label>
+              <input 
+                type="text" 
+                id="ollama-model" 
+                placeholder="llama3"
+              >
+              <small class="help-text">Ejemplo: llama3, mistral, phi3, etc.</small>
+            </div>
+          </div>
+
+          <!-- Campos para Hermes -->
+          <div id="fields-hermes" class="provider-fields hidden">
+            <div class="form-group">
+              <label for="hermes-url">URL de Hermes:</label>
+              <input 
+                type="url" 
+                id="hermes-url" 
+                placeholder="http://127.0.0.1:18789/browser/context"
+              >
+              <small class="help-text">Dirección de la API del agente local Hermes.</small>
+            </div>
+          </div>
+
+          <!-- Campos para Antigravity -->
+          <div id="fields-antigravity" class="provider-fields hidden">
+            <div class="form-group">
+              <label for="antigravity-url">URL de Antigravity:</label>
+              <input 
+                type="url" 
+                id="antigravity-url" 
+                placeholder="http://127.0.0.1:18789/browser/context"
+              >
+              <small class="help-text">Dirección del puente de automatización de Antigravity.</small>
+            </div>
+          </div>
+
+          <hr class="divider">
+
+          <div class="form-group">
+            <label for="max-text-length">Límite de caracteres:</label>
+            <input 
+              type="number" 
+              id="max-text-length" 
+              min="1000" 
+              max="500000" 
+              required
+            >
+          </div>
+
+          <div class="form-group-checkbox">
+            <input type="checkbox" id="include-links">
+            <div class="checkbox-label">
+              <label for="include-links">Enviar enlaces de página</label>
+            </div>
+          </div>
+
+          <div class="form-group-checkbox">
+            <input type="checkbox" id="include-selection">
+            <div class="checkbox-label">
+              <label for="include-selection">Enviar selección de texto</label>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-block">Guardar Ajustes</button>
+            <div id="save-status" class="save-status"></div>
+          </div>
+        </form>
+      </main>
+    </div>
+
+    <footer class="app-footer">
+      <span>Clawky Browser Copilot v0.1.0</span>
+    </footer>
+  </div>
+
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>

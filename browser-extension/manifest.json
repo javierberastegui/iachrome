@@ -2,15 +2,21 @@
   "manifest_version": 3,
   "name": "Clawky Browser Copilot",
   "version": "0.1.0",
-  "description": "Puente seguro y controlado entre el navegador y tu asistente de IA local.",
+  "description": "Puente seguro y controlado en tu panel lateral entre el navegador y tu asistente de IA local.",
   "permissions": [
     "activeTab",
     "storage",
-    "scripting"
+    "scripting",
+    "sidePanel"
   ],
   "action": {
-    "default_popup": "popup.html",
     "default_title": "Clawky Copilot"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
   },
   "options_ui": {
     "page": "options.html",
